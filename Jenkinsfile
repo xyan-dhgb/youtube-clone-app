@@ -19,7 +19,7 @@ pipeline{
         }
         stage('Checkout from Git'){
             steps{
-                git branch: 'main', url: 'https://github.com/uniquesreedhar/Youtube-clone-app.git'
+                git branch: 'main', url: 'https://github.com/xyan-dhgb/youtube-clone-app'
             }
         }
         stage("Sonarqube Analysis "){
@@ -74,25 +74,14 @@ pipeline{
                 sh 'docker run -d --name youtube1 -p 3000:3000 sreedhar8897/youtube:latest'
             }
         }
-        stage('Deploy to kubernets'){
-            steps{
-                withAWS(credentials: 'aws-key', region: 'us-east-1') {
-                script{
-                    withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'k8s', namespace: '', restrictKubeConfigAccess: false, serverUrl: '') {
-                        sh 'kubectl apply -f deployment.yml'
-                    }
-                }
-            }   }
-        }
 
     }
     post {
     always {
         echo 'Slack Notifications'
         slackSend (
-            channel: '#jenkins', 
-            color: COLOR_MAP[currentBuild.currentResult],
-            message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} \n build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
+            channel: '#all-youtube-clone-app',
+            message: "Success!"
         )
     }
 }
